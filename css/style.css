@@ -771,3 +771,9 @@ a:focus {
 .welcome__text p {
   margin: 20px 0;
 }
+
+.tasks-switch a:active {
+  color: #31313a;
+  background-color: #d7dbe8;
+  border-color: #d7dbe8;
+}
