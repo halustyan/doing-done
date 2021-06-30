@@ -4,7 +4,7 @@
         <section class="content__side">
           <p class="content__side-info">Если у вас уже есть аккаунт, авторизуйтесь на сайте</p>
 
-          <a class="button button--transparent content__side-button" href="form-authorization.html">Войти</a>
+          <a class="button button--transparent content__side-button" href="auth.php">Войти</a>
         </section>
 
         <main class="content__main">
@@ -15,7 +15,7 @@
               <label class="form__label" for="email">E-mail <sup>*</sup></label>
 
               <input class="form__input <?php
-                 if (isset($errors['emptyemail'])||isset($errors['false_email'])){
+                 if (isset($errors['emptyemail'])||isset($errors['false_email'])||isset($errors['repeatuser'])){
                   echo "form__input--error";}?>" type="text" name="email" id="email" value="" placeholder="Введите e-mail" required>
 
               <p class="form__message">
@@ -29,6 +29,10 @@
                  <?php
                  if (isset($errors['false_email'])){
                   echo $errors['false_email'];
+                 }?>
+     <?php
+                 if (isset($errors['repeatuser'])){
+                  echo $errors['repeatuser'];
                  }?>
 
                  </p>
@@ -66,9 +70,8 @@ required>
             </div>
 
             <div class="form__row form__row--controls">
-
+            
             <?php if(isset($errors)&&(count($errors)>0)): ?>
-            <?php var_dump($errors); ?>
               <p class="error-message">Пожалуйста, исправьте ошибки в форме</p>
               <?php endif; ?>
 

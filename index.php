@@ -19,33 +19,43 @@ if(isset($_GET['projectid'])) {
     $accurateCatTasksArr = mysqli_fetch_all($getAccurateCatTasksQuery, MYSQLI_ASSOC);
 }
 
+
 /*Получаю список заданий*/
 $getTasks = "SELECT * FROM tasks";
 $getTasksQuery = mysqli_query($con, $getTasks);
 $tasksArray = mysqli_fetch_all($getTasksQuery, MYSQLI_ASSOC);
 
+
+$day = "";
+$getDailyTasksArray = "";
 if (isset($_GET['day'])) {
+    $day = mysqli_real_escape_string($con, $_GET['day']);
     $getDailyTasks = "SELECT * FROM tasks WHERE finishdate = CURRENT_DATE()";
     $getDailyTasksQuery = mysqli_query($con, $getDailyTasks);
     $getDailyTasksArray = mysqli_fetch_all($getDailyTasksQuery, MYSQLI_ASSOC);
-    var_dump($getDailyTasksArray );
 }
 
+   $tomorrow= "";
+   $getTomorrowTasksArray = '';
 if (isset($_GET['tomorrow'])) {
+    $tomorrow = mysqli_real_escape_string($con, $_GET['tomorrow']);
     $getTomorrowTasks = "SELECT * FROM tasks WHERE finishdate = CURRENT_DATE()+1";
     $getTomorrowTasksQuery = mysqli_query($con, $getTomorrowTasks);
     $getTomorrowTasksArray = mysqli_fetch_all($getTomorrowTasksQuery, MYSQLI_ASSOC);
-    var_dump($getTomorrowTasksArray);
 }
 
+$overdued = '';
+$getOverDuedTasksArray = '';
 if (isset($_GET['overdued'])) {
-    $getOverDuedTasks = "SELECT * FROM tasks WHERE finishdate > CURRENT_DATE()+1";
+    $overdued = mysqli_real_escape_string($con, $_GET['overdued']);
+    $getOverDuedTasks = "SELECT * FROM tasks WHERE finishdate < CURRENT_DATE()";
     $getOverDuedTasksQuery = mysqli_query($con, $getOverDuedTasks);
     $getOverDuedTasksArray = mysqli_fetch_all($getOverDuedTasksQuery, MYSQLI_ASSOC);
-    var_dump($getOverDuedTasksArray);
 }
+if (empty($_SESSION)) {
+    header("Location: guest.php");
+} 
 
-
-$content = include_template('main.php', ["tasksArray" => $tasksArray, "title"=>$title, "projectsArray" => $projectsArray, "accurateCatTasksArr"=>$accurateCatTasksArr]);
+$content = include_template('main.php', ["tasksArray" => $tasksArray, "getOverDuedTasksArray"=>$getOverDuedTasksArray, "getDailyTasksArray"=>$getDailyTasksArray, "getTomorrowTasksArray"=>$getTomorrowTasksArray, "title"=>$title, "projectsArray" => $projectsArray, "accurateCatTasksArr"=>$accurateCatTasksArr]);
 $layoutContent = include_template('layout.php', ["content" => $content, "title"=>$title]);
 print($layoutContent);

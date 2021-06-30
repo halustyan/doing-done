@@ -14,7 +14,6 @@ if (isset($_POST['email']))
 $password = '';
 if (isset($_POST['password']))
 {
-    //$password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $password = $_POST['password'];
 }
 
@@ -56,6 +55,18 @@ if (isset($_POST['submitregister']))
     {
         $errors['name'] = "Пустое имя";
     }
+    $selectUsers = "SELECT * FROM users";
+    $selectUsersQuery = mysqli_query($con, $selectUsers);
+    $selectUsersArray = mysqli_fetch_all($selectUsersQuery, MYSQLI_ASSOC);
+
+    foreach ($selectUsersArray as $allUsers) {
+        
+        if (in_array($email, $allUsers)) {
+            $errors['repeatuser'] = "Такой юзер уже существует. Попробуйте другой email адрес!";
+        }
+    }
+
+
 
     if (!$errors)
     {
@@ -67,18 +78,12 @@ if (isset($_POST['submitregister']))
         $selectUserDb = mysqli_query($con, $selectUser);
         $selectUserArray = mysqli_fetch_array($selectUserDb, MYSQLI_ASSOC);
 
-        $verify = password_verify($password, $selectUserArray['password']);
-        if (isset($selectUserArray['id']) && $verify)
+
+        if (isset($selectUserArray['id']))
         {
             $_SESSION['iduser'] = $selectUserArray['id'];
             $_SESSION['username'] = $selectUserArray['name'];
-
         }
-        else
-        {
-            $errors['wrongpassword'] = "Вы ввели неверный пароль";
-        }
-
 
     }
 }
